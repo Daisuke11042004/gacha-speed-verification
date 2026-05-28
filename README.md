@@ -35,19 +35,18 @@
   * 30.000秒でタイムアウト（エラー強制遮断）していた処理時間が、**1.250秒へと短縮**。
   * 不備のない正確な100,000件の負荷検証環境の構築を完了しました。
 
-* **10万件データ挿入時の30秒タイムアウトエラー**
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/456245a4-22a2-4597-9a2e-db7637b97a04" alt="10万件データ挿入時の30秒タイムアウトエラー" width="60%" style="max-width: 100%;">
+  <br>
+  <strong>図1: 対策前：個別の10万回コミットによるタイムアウト（30.000 sec）</strong>
+</p>
 
-<img width="1716" height="926" alt="スクリーンショット 2026-05-17 221349" src="https://github.com/user-attachments/assets/456245a4-22a2-4597-9a2e-db7637b97a04" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c10b9e42-7776-4076-8438-0d7a8533db04" alt="トランザクションによる挿入高速化成功" width="60%" style="max-width: 100%;">
+  <br>
+  <strong>図2: 対策後：一括処理（トランザクション）による挿入完遂（1.250 sec）</strong>
+</p>
 
-
-*図1: 対策前：個別の10万回コミットによるタイムアウト（30.000 sec）*
-
-* **トランザクションによる挿入高速化成功**
-
-<img width="1913" height="1018" alt="スクリーンショット 2026-05-17 224036" src="https://github.com/user-attachments/assets/c10b9e42-7776-4076-8438-0d7a8533db04" />
-
-
-*図2: 対策後：一括処理（トランザクション）による挿入完遂（1.250 sec）*
 
 ---
 
@@ -72,27 +71,21 @@
   * `ALTER TABLE gacha_logs ADD INDEX idx_user_id (user_id);` を実行し、ユーザーID専用のインデックスを物理的に作成しました。
   * これにより、MySQLは10万件の中から目的の83件へと直接アクセス可能になり、処理時間をマイクロ秒単位へと短縮しました。
  
-* **SQL側でインデックスを付与しない処理内容**
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a0c44a78-2183-4fad-b1e8-6555ac94caf6" alt="SQL側でインデックスを付与しない処理内容" width="60%" style="max-width: 100%;">
+  <br><br>
+  <img src="https://github.com/user-attachments/assets/ebdfbde7-ed4b-4b9f-8474-fbbec8163b7d" alt="インデックスなしの探索結果" width="60%" style="max-width: 100%;">
+  <br>
+  <strong>図3・図4: 対策前：フルテーブルスキャンによる処理の停滞（13.3687 ms）</strong>
+</p>
 
-<img width="1284" height="946" alt="スクリーンショット 2026-05-28 060045" src="https://github.com/user-attachments/assets/a0c44a78-2183-4fad-b1e8-6555ac94caf6" />
-
-* **インデックスなしの探索結果**
-
-<img width="486" height="244" alt="スクリーンショット 2026-05-28 060036" src="https://github.com/user-attachments/assets/ebdfbde7-ed4b-4b9f-8474-fbbec8163b7d" />
-
-
-*図3.図4: 対策前：フルテーブルスキャンによる処理の停滞（13.3687 ms）*
-
-* **SQL側でインデックスを付与を行う処理内容**
-
-<img width="1919" height="1024" alt="スクリーンショット 2026-05-28 060237" src="https://github.com/user-attachments/assets/c9723abb-3b77-4b01-9018-a43303941813" />
-
-* **インデックスありの探索結果**
-
-<img width="561" height="245" alt="スクリーンショット 2026-05-28 060548" src="https://github.com/user-attachments/assets/619f1da3-b96b-47f6-9455-90350ee29001" />
-
-
-*図5.図6: 対策後：高カーディナリティ列へのインデックス付与による抽出（502.8 µs）*
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a792f75e-2a70-4b45-8858-2399f009b914" alt="SQL側でインデックスを付与を行う処理内容" width="60%" style="max-width: 100%;">
+  <br>
+  <img src="https://github.com/user-attachments/assets/619f1da3-b96b-47f6-9455-90350ee29001" alt="インデックスありの探索結果" width="60%" style="max-width: 100%;">
+  <br>
+  <strong>図5・図6: 対策後：高カーディナリティ列へのインデックス付与による抽出（502.8 µs）</strong>
+</p>
 
 ---
 
